@@ -157,7 +157,11 @@ function App() {
           @euclidesdry
         </a>
       </p>
-      <Modal title="Basic Modal" open={isModalOpen} onOk={handleAddNewCard} onCancel={handleCancel}>
+      <Modal
+        title='Adding a new Timezone "Weather Forecast"'
+        open={isModalOpen}
+        onOk={handleAddNewCard}
+        onCancel={handleCancel}>
         {modalError ? (
           <Alert message={modalError} type="error" style={{ marginBottom: '8px' }} />
         ) : null}

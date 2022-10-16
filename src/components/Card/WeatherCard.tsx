@@ -118,11 +118,7 @@ export function WeatherCard({ cardId, lastCard, location, onAddNewCard }: Weathe
   }, [weatherQueryResponse?.data]);
 
   return (
-    <Card
-      style={{ width: 380, marginTop: 8 }}
-      size="small"
-      title={currentTimezone}
-      actions={configActions()}>
+    <Card className="weatherCard" size="small" title={currentTimezone} actions={configActions()}>
       <Skeleton loading={loading} avatar active>
         {currentWeather?.weather ? (
           <>
@@ -150,7 +146,7 @@ export function WeatherCard({ cardId, lastCard, location, onAddNewCard }: Weathe
           </>
         ) : null}
       </Skeleton>
-      <Divider style={{ marginTop: '8px', marginBottom: '8px' }} />
+      <Divider className="weatherCard__divider" />
       {currentAllDays ? <ListNextDays loading={loading} currentAllDays={currentAllDays} /> : null}
     </Card>
   );
