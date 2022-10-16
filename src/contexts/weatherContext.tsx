@@ -26,11 +26,18 @@ const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({
     cachedCoordinates ? cachedCoordinates : initialContextValue
   );
 
-  function addCoordinates(newCoordinate: CoordinatesType): CoordinatesType {
-    setCoordinateList((currentCoordinates) => [
-      ...currentCoordinates,
-      newCoordinate,
-    ]);
+  function addCoordinates(
+    newCoordinate?: CoordinatesType
+  ): CoordinatesType | undefined {
+    if (newCoordinate) {
+      setCoordinateList((currentCoordinates) => [
+        ...currentCoordinates,
+        newCoordinate,
+      ]);
+    }
+
+    setCoordinateList(initialContextValue);
+
     return newCoordinate;
   }
 

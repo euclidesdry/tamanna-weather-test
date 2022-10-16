@@ -1,4 +1,4 @@
-import { Divider, Card, Descriptions, Skeleton } from "antd";
+import { Divider, Card, Descriptions, Skeleton, Popconfirm } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import {
@@ -6,15 +6,15 @@ import {
   DailyType,
   MainCondition,
   WeatherResponseType,
-} from "../../../@types/weather";
+} from "../../@types/weather";
 import ReactAnimatedWeather from "react-animated-weather";
-import weatherIcon from "../../../helpers/weather-icon";
+import weatherIcon from "../../helpers/weather-icon";
 import { useQueryClient } from "@tanstack/react-query";
-import { getWeather } from "../../../apis/weather";
-import { ListNextDays } from "../../ListNextDays";
+import { getWeather } from "../../apis/weather";
+import { ListNextDays } from "../ListNextDays";
 import React, { ReactNode } from "react";
-import { IAPIResponseTemplate } from "../../../@types/api";
-import { useWeatherContext } from "../../../contexts/weatherContext";
+import { IAPIResponseTemplate } from "../../@types/api";
+import { useWeatherContext } from "../../contexts/weatherContext";
 
 const defaults = {
   icon: "CLEAR_DAY",
@@ -69,15 +69,13 @@ export function WeatherCard({
         ["weatherCard-query:" + cardId],
         () => getWeather(location.latitude, location.longitude),
         {
-          staleTime: 240000,
+          staleTime: 120000,
         }
       );
 
       const queryData = queryClient.getQueryData<
         IAPIResponseTemplate<WeatherResponseType>
       >(["weatherCard-query:" + cardId]);
-
-      console.log(" ---::: queryData []: ", queryData?.data);
 
       setWeatherQueryResponse(queryData);
     })();
@@ -100,11 +98,21 @@ export function WeatherCard({
 
   const configActions = (): ReactNode[] => {
     let options = [
-      <EditOutlined key="edit" />,
-      <DeleteOutlined
-        key="delete"
-        onClick={() => handleRemoveLocation(cardId)}
+      <EditOutlined
+        key="edit"
+        onClick={() => {
+          alert("Opps!! The Edit function will be available son...");
+        }}
       />,
+      <Popconfirm
+        placement="top"
+        title={`Are you sure that want to remove this ${currentTimezone} "Weather Forecast"?`}
+        onConfirm={() => handleRemoveLocation(cardId)}
+        okText="Yes, I want!"
+        cancelText="No"
+      >
+        <DeleteOutlined key="delete" />
+      </Popconfirm>,
       <PlusOutlined key="add" onClick={() => handleAddLocation()} />,
     ];
     if (lastCard !== cardId && lastCard > 0) {

@@ -2,7 +2,7 @@ import React from "react";
 import "./App.css";
 import { Divider, Input, Modal, Select, Switch } from "antd";
 import { useCurrentPosition } from "react-use-geolocation";
-import { WeatherCard } from "./components/cards/Card";
+import { WeatherCard } from "./components/Card";
 import { useWeatherContext } from "./contexts/weatherContext";
 import { COUNTRY_LIST } from "./constants/country";
 import { getWeatherByCountryAndState } from "./apis/weather";
@@ -113,6 +113,8 @@ function App() {
         },
         0
       );
+    } else {
+      addCoordinates();
     }
 
     if (!latitude && !longitude && error) {
@@ -161,7 +163,7 @@ function App() {
       >
         <Input
           addonBefore={selectBefore(setNewLocation)}
-          defaultValue="mysite"
+          defaultValue="Lisboa"
           onChange={handleUpdateCountryState}
         />
       </Modal>

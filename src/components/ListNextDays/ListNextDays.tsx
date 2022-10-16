@@ -15,9 +15,8 @@ export function ListNextDays({ currentAllDays, loading }: MainCardProps) {
       dataSource={currentAllDays.filter((day, index) => index !== 0)}
       renderItem={(item) => (
         <List.Item style={{ paddingLeft: 0, paddingRight: 0 }}>
-          {`${format(new Date(item?.dt * 1000), "MMM do")}, ${
-            item.humidity
-          }% | Min. ${item.temp.min.toFixed(
+          <strong>{format(new Date(item?.dt * 1000), "MMM do")}</strong>
+          {`, ${item.humidity}% | Min. ${item.temp.min.toFixed(
             0
           )}ºC * Max. ${item.temp.max.toFixed(0)}ºC | ${
             item.weather[0].main
