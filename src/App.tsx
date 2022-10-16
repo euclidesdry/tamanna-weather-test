@@ -123,7 +123,7 @@ function App() {
   return (
     <div className="App">
       <div>
-        <a href="https://vitejs.dev" target="_blank">
+        <a href="https://www.tamanna.com" target="_blank">
           <img
             src="/assets/img/tamanna-logo.png"
             className="logo"
