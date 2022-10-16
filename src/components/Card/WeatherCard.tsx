@@ -36,6 +36,7 @@ export function WeatherCard({ cardId, lastCard, location, onAddNewCard }: Weathe
   const [weatherQueryResponse, setWeatherQueryResponse] =
     React.useState<IAPIResponseTemplate<WeatherResponseType>>();
   const [currentTimezone, setCurrentTimezone] = React.useState<string | null>(null);
+  const [currentTimezoneOffset, setCurrentTimezoneOffset] = React.useState<number>();
   const [currentAllDays, setCurrentAllDays] = React.useState<DailyType[] | null>(null);
   const [currentWeather, setCurrentWeather] = React.useState<CurrentType | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -67,9 +68,9 @@ export function WeatherCard({ cardId, lastCard, location, onAddNewCard }: Weathe
 
   const loading = isLoading;
 
-  const onSelectIcon = (mainCondition: MainCondition) => ({
+  const onSelectIcon = (mainCondition: MainCondition, date?: string | number) => ({
     ...defaults,
-    icon: weatherIcon.icon.select(mainCondition)
+    icon: weatherIcon.icon.select(mainCondition, date)
   });
 
   const handleRemoveLocation = (id: number) => {
@@ -111,6 +112,7 @@ export function WeatherCard({ cardId, lastCard, location, onAddNewCard }: Weathe
     if (weatherQueryResponse?.data) {
       setCurrentWeather(weatherQueryResponse.data.current);
       setCurrentTimezone(weatherQueryResponse.data.timezone);
+      setCurrentTimezoneOffset(weatherQueryResponse.data.timezone_offset);
       setCurrentAllDays(weatherQueryResponse.data.daily);
     }
   }, [weatherQueryResponse?.data]);
@@ -124,7 +126,12 @@ export function WeatherCard({ cardId, lastCard, location, onAddNewCard }: Weathe
       <Skeleton loading={loading} avatar active>
         {currentWeather?.weather ? (
           <>
-            <ReactAnimatedWeather {...onSelectIcon(currentWeather?.weather[0].main)} />
+            <ReactAnimatedWeather
+              {...onSelectIcon(
+                currentWeather?.weather[0].main,
+                currentWeather?.dt + (currentTimezoneOffset ? currentTimezoneOffset : 0)
+              )}
+            />
             <Descriptions
               title={`Today, ${format(new Date(currentWeather?.dt * 1000), 'LLLL do, yyyy')}`}
               size="small"

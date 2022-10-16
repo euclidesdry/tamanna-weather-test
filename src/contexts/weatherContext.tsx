@@ -24,7 +24,9 @@ const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (newCoordinate) {
       setCoordinateList((currentCoordinates) => [...currentCoordinates, newCoordinate]);
     } else {
-      setCoordinateList(initialContextValue);
+      if (!cachedCoordinates) {
+        setCoordinateList(initialContextValue);
+      }
     }
 
     return newCoordinate;
