@@ -1,5 +1,5 @@
-import { IconType } from "../types/cloud-icons";
-import { MainCondition } from "../types/weather";
+import { IconType } from "../@types/cloud-icons";
+import { MainCondition } from "../@types/weather";
 
 export default {
   icon: {

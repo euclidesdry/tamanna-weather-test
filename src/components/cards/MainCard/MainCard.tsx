@@ -1,7 +1,7 @@
 import { Divider, Card, Descriptions, Skeleton } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
-import { CurrentType, DailyType, MainCondition } from "../../../types/weather";
+import { CurrentType, DailyType, MainCondition } from "../../../@types/weather";
 import ReactAnimatedWeather from "react-animated-weather";
 import weatherIcon from "../../../helpers/weather-icon";
 import { useQuery } from "@tanstack/react-query";
@@ -18,10 +18,9 @@ const defaults = {
 
 type MainCardProps = {
   location: { latitude: number; longitude: number };
-  loading: boolean;
 };
 
-export function MainCard({ location, loading }: MainCardProps) {
+export function MainCard({ location }: MainCardProps) {
   const [currentTimezone, setCurrentTimezone] = React.useState<string | null>(
     null
   );
@@ -31,9 +30,15 @@ export function MainCard({ location, loading }: MainCardProps) {
   const [currentWeather, setCurrentWeather] =
     React.useState<CurrentType | null>(null);
 
-  const { data: weatherQueryResponse, isLoading } = useQuery(["weather"], () =>
+  const {
+    data: weatherQueryResponse,
+    isLoading,
+    isFetching,
+  } = useQuery(["weather"], () =>
     getWeather(location.latitude, location.longitude)
   );
+
+  const loading = isLoading || isFetching;
 
   React.useEffect(() => {
     if (weatherQueryResponse?.data) {
@@ -85,10 +90,7 @@ export function MainCard({ location, loading }: MainCardProps) {
       </Skeleton>
       <Divider style={{ marginTop: "8px", marginBottom: "8px" }} />
       {currentAllDays ? (
-        <ListNextDays
-          loading={loading || isLoading}
-          currentAllDays={currentAllDays}
-        />
+        <ListNextDays loading={loading} currentAllDays={currentAllDays} />
       ) : null}
     </Card>
   );

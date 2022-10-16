@@ -1,6 +1,6 @@
 import { List } from "antd";
 import { format } from "date-fns";
-import { DailyType } from "../../types/weather";
+import { DailyType } from "../../@types/weather";
 
 type MainCardProps = {
   currentAllDays: DailyType[];

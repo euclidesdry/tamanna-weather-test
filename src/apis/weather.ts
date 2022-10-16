@@ -1,6 +1,6 @@
 import axiosService from "../service/axiosService";
-import { WeatherResponseType } from "../types/weather";
-import { IAPIResponseTemplate } from "../types/api";
+import { WeatherResponseType } from "../@types/weather";
+import { IAPIResponseTemplate } from "../@types/api";
 
 const API_URL = "https://api.openweathermap.org";
 

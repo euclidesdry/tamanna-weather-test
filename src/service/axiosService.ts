@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { IAPIResponseTemplate } from "../types/api";
+import { IAPIResponseTemplate } from "../@types/api";
 
 class AxiosService {
   instance: AxiosInstance;
