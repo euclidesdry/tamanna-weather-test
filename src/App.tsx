@@ -137,7 +137,7 @@ function App() {
         </a>
       </div>
       <h1>Weather</h1>
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '16px' }}>
+      <div className="appContainer">
         {coordinateList && coordinateList.length > 0
           ? coordinateList.map((currentCoordinate, index) => (
               <WeatherCard
