@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Divider, Card, List, Descriptions, Skeleton } from "antd";
+import { Divider, Card, Descriptions, Skeleton } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import { CurrentType, DailyType, MainCondition } from "../../../types/weather";
@@ -7,6 +6,8 @@ import ReactAnimatedWeather from "react-animated-weather";
 import weatherIcon from "../../../helpers/weather-icon";
 import { useQuery } from "@tanstack/react-query";
 import { getWeather } from "../../../apis/weather";
+import { ListNextDays } from "../../ListNextDays";
+import React from "react";
 
 const defaults = {
   icon: "CLEAR_DAY",
@@ -16,23 +17,31 @@ const defaults = {
 };
 
 type MainCardProps = {
-  currentWeather: CurrentType | null;
-  currentTimezone: string | null;
-  currentAllDays: DailyType[] | null;
   location: { latitude: number; longitude: number };
   loading: boolean;
 };
 
-export function MainCard({
-  currentTimezone,
-  currentWeather,
-  currentAllDays,
-  location,
-  loading,
-}: MainCardProps) {
-  const { data, isLoading } = useQuery(["weather"], () =>
+export function MainCard({ location, loading }: MainCardProps) {
+  const [currentTimezone, setCurrentTimezone] = React.useState<string | null>(
+    null
+  );
+  const [currentAllDays, setCurrentAllDays] = React.useState<
+    DailyType[] | null
+  >(null);
+  const [currentWeather, setCurrentWeather] =
+    React.useState<CurrentType | null>(null);
+
+  const { data: weatherQueryResponse, isLoading } = useQuery(["weather"], () =>
     getWeather(location.latitude, location.longitude)
   );
+
+  React.useEffect(() => {
+    if (weatherQueryResponse?.data) {
+      setCurrentWeather(weatherQueryResponse.data.current);
+      setCurrentTimezone(weatherQueryResponse.data.timezone);
+      setCurrentAllDays(weatherQueryResponse.data.daily);
+    }
+  }, [weatherQueryResponse?.data]);
 
   const onSelectIcon = (mainCondition: MainCondition) => ({
     ...defaults,
@@ -67,7 +76,7 @@ export function MainCard({
               </Descriptions.Item>
               <Descriptions.Item label="Description">
                 {currentWeather?.weather
-                  ? currentWeather?.weather[0].description
+                  ? `${currentWeather?.weather[0].main} ● ${currentWeather?.weather[0].description}`
                   : null}
               </Descriptions.Item>
             </Descriptions>
@@ -76,28 +85,9 @@ export function MainCard({
       </Skeleton>
       <Divider style={{ marginTop: "8px", marginBottom: "8px" }} />
       {currentAllDays ? (
-        <List
+        <ListNextDays
           loading={loading || isLoading}
-          size="small"
-          dataSource={currentAllDays.filter((day, index) => index !== 0)}
-          renderItem={(item) => (
-            <List.Item style={{ paddingLeft: 0, paddingRight: 0 }}>
-              {`${format(new Date(item?.dt * 1000), "MMM do")}, ${
-                item.humidity
-              }% | Min. ${item.temp.min.toFixed(
-                0
-              )}ºC * Max. ${item.temp.max.toFixed(0)}ºC | ${
-                item.weather[0].main
-              } ● `}
-              <img
-                // http://openweathermap.org/img/wn/10d@2x.png
-                src={`https://openweathermap.org/img/wn/${item.weather[0].icon}.png`}
-                alt={item.weather[0].description}
-                height={32}
-                title={item.weather[0].description}
-              />
-            </List.Item>
-          )}
+          currentAllDays={currentAllDays}
         />
       ) : null}
     </Card>
