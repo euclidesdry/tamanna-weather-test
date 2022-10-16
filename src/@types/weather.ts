@@ -15,13 +15,13 @@ type FeelsLikeType = {
 };
 
 export type MainCondition =
-  | "Thunderstorm"
-  | "Drizzle"
-  | "Rain"
-  | "Snow"
-  | "Atmosphere"
-  | "Clear"
-  | "Clouds";
+  | 'Thunderstorm'
+  | 'Drizzle'
+  | 'Rain'
+  | 'Snow'
+  | 'Atmosphere'
+  | 'Clear'
+  | 'Clouds';
 
 export type WeatherType = {
   id: number;

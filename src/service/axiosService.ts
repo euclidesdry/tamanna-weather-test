@@ -1,5 +1,5 @@
-import axios, { AxiosInstance } from "axios";
-import { IAPIResponseTemplate } from "../@types/api";
+import axios, { AxiosInstance } from 'axios';
+import { IAPIResponseTemplate } from '../@types/api';
 
 class AxiosService {
   instance: AxiosInstance;
@@ -23,23 +23,15 @@ class AxiosService {
   }
 
   post<ResponseType>(url: string, data: any) {
-    return this.instance.post<any, IAPIResponseTemplate<ResponseType>, any>(
-      url,
-      data
-    );
+    return this.instance.post<any, IAPIResponseTemplate<ResponseType>, any>(url, data);
   }
 
   patch<ResponseType>(url: string, data: any) {
-    return this.instance.patch<any, IAPIResponseTemplate<ResponseType>, any>(
-      url,
-      data
-    );
+    return this.instance.patch<any, IAPIResponseTemplate<ResponseType>, any>(url, data);
   }
 
   delete<ResponseType>(url: string) {
-    return this.instance.delete<any, IAPIResponseTemplate<ResponseType>, any>(
-      url
-    );
+    return this.instance.delete<any, IAPIResponseTemplate<ResponseType>, any>(url);
   }
 }
 

@@ -1,7 +1,7 @@
-import { AxiosRequestConfig } from "axios";
+import { AxiosRequestConfig } from 'axios';
 
 export type IAPIResponseTemplate<ReturnedDataType = any> = {
-  headers: { "set-cookie": string[]; "x-total-count": string };
+  headers: { 'set-cookie': string[]; 'x-total-count': string };
   data: ReturnedDataType;
   config: AxiosRequestConfig;
   request: {} | any;

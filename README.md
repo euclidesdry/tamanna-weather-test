@@ -1,6 +1,6 @@
 # tamanna-weather-test
 
- Some Weather App
+Some Weather App
 
 ## App Link
 

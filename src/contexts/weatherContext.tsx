@@ -1,39 +1,27 @@
-import * as React from "react";
-import { useLocalStorage } from "react-use";
-import {
-  CoordinatesType,
-  WeatherContextType,
-} from "../@types/contexts/weather";
+import * as React from 'react';
+import { useLocalStorage } from 'react-use';
+import { CoordinatesType, WeatherContextType } from '../@types/contexts/weather';
 
 const initialContextValue = [
   {
     latitude: 38.7259284,
-    longitude: -9.137382,
-  },
+    longitude: -9.137382
+  }
 ];
 
-export const WeatherContext = React.createContext<WeatherContextType | null>(
-  null
-);
+export const WeatherContext = React.createContext<WeatherContextType | null>(null);
 
-const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cachedCoordinates, setCoordinateToStorage, removeCoordinateToStorage] =
-    useLocalStorage<CoordinatesType[]>("TMN:WeatherList");
+    useLocalStorage<CoordinatesType[]>('TMN:WeatherList');
 
   const [coordinateList, setCoordinateList] = React.useState<CoordinatesType[]>(
     cachedCoordinates ? cachedCoordinates : initialContextValue
   );
 
-  function addCoordinates(
-    newCoordinate?: CoordinatesType
-  ): CoordinatesType | undefined {
+  function addCoordinates(newCoordinate?: CoordinatesType): CoordinatesType | undefined {
     if (newCoordinate) {
-      setCoordinateList((currentCoordinates) => [
-        ...currentCoordinates,
-        newCoordinate,
-      ]);
+      setCoordinateList((currentCoordinates) => [...currentCoordinates, newCoordinate]);
     } else {
       setCoordinateList(initialContextValue);
     }
@@ -41,10 +29,7 @@ const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({
     return newCoordinate;
   }
 
-  function updateCoordinates(
-    newCoordinate: CoordinatesType,
-    coordinateId: number
-  ): number {
+  function updateCoordinates(newCoordinate: CoordinatesType, coordinateId: number): number {
     setCoordinateList((currentCoordinates) =>
       currentCoordinates.map((coordinate, index) => {
         if (index === coordinateId) return newCoordinate;
@@ -76,7 +61,7 @@ const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({
         addCoordinates,
         updateCoordinates,
         removeCoordinates,
-        clearCoordinates,
+        clearCoordinates
       }}
     >
       {children}
@@ -85,9 +70,7 @@ const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({
 };
 
 export function useWeatherContext() {
-  const selectedContext = React.useContext(
-    WeatherContext
-  ) as WeatherContextType;
+  const selectedContext = React.useContext(WeatherContext) as WeatherContextType;
 
   return selectedContext;
 }

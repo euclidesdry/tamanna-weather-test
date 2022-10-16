@@ -1,19 +1,17 @@
-import React from "react";
-import "./App.css";
-import { Alert, Divider, Input, message, Modal, Select, Switch } from "antd";
-import { useCurrentPosition } from "react-use-geolocation";
-import { WeatherCard } from "./components/Card";
-import { useWeatherContext } from "./contexts/weatherContext";
-import { COUNTRY_LIST } from "./constants/country";
-import { getWeatherByCountryAndState } from "./apis/weather";
+import React from 'react';
+import './App.css';
+import { Alert, Divider, Input, message, Modal, Select } from 'antd';
+import { useCurrentPosition } from 'react-use-geolocation';
+import { WeatherCard } from './components/Card';
+import { useWeatherContext } from './contexts/weatherContext';
+import { COUNTRY_LIST } from './constants/country';
+import { getWeatherByCountryAndState } from './apis/weather';
 
 const { Option } = Select;
 
 type LocationType = { country?: string; state?: string };
 
-const selectBefore = (
-  setLocation: React.Dispatch<React.SetStateAction<LocationType>>
-) => (
+const selectBefore = (setLocation: React.Dispatch<React.SetStateAction<LocationType>>) => (
   <Select
     defaultValue="PT"
     className="select-before"
@@ -21,10 +19,10 @@ const selectBefore = (
       setLocation((oldLocation) => ({
         ...oldLocation,
         country: value,
-        state: "Lisboa",
+        state: 'Lisboa'
       }));
     }}
-    style={{ minWidth: "160px" }}
+    style={{ minWidth: '160px' }}
   >
     {COUNTRY_LIST.map(({ value, label }) => (
       <Option value={value}>{label}</Option>
@@ -34,27 +32,19 @@ const selectBefore = (
 
 function App() {
   const [position, error] = useCurrentPosition();
-  const {
-    coordinateList,
-    addCoordinates,
-    updateCoordinates,
-    clearCoordinates,
-  } = useWeatherContext();
+  const { coordinateList, addCoordinates, updateCoordinates, clearCoordinates } =
+    useWeatherContext();
   const [newLocation, setNewLocation] = React.useState<LocationType>({
-    country: "PT",
-    state: "Lisboa",
+    country: 'PT',
+    state: 'Lisboa'
   });
   const [isVisible, setIsVisible] = React.useState(true);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [modalError, setModalError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    console.log("::::: New Location: ", newLocation);
+    console.log('::::: New Location: ', newLocation);
   }, [newLocation]);
-
-  const onChange = (checked: boolean) => {
-    setIsVisible(!checked);
-  };
 
   const onAddCard = () => {
     setIsModalOpen(true);
@@ -80,7 +70,7 @@ function App() {
 
           addCoordinates({
             latitude: response[0].lat,
-            longitude: response[0].lon,
+            longitude: response[0].lon
           });
 
           message.success(
@@ -97,19 +87,17 @@ function App() {
     setIsModalOpen(false);
   };
 
-  function handleUpdateCountryState(
-    element: React.ChangeEvent<HTMLInputElement> | undefined
-  ) {
+  function handleUpdateCountryState(element: React.ChangeEvent<HTMLInputElement> | undefined) {
     if (element) {
       setNewLocation((oldLocation) => ({
         ...oldLocation,
-        state: element?.target.value,
+        state: element?.target.value
       }));
     }
   }
 
   React.useEffect(() => {
-    console.log("🌐 Geolocation API", position, error);
+    console.log('🌐 Geolocation API', position, error);
 
     const latitude = position?.coords?.latitude as number | undefined;
     const longitude = position?.coords?.longitude as number | undefined;
@@ -123,7 +111,7 @@ function App() {
       updateCoordinates(
         {
           latitude,
-          longitude,
+          longitude
         },
         0
       );
@@ -140,16 +128,11 @@ function App() {
     <div className="App">
       <div>
         <a href="https://www.tamanna.com" target="_blank">
-          <img
-            src="/assets/img/tamanna-logo.png"
-            className="logo"
-            alt="Tamanna logo"
-          />
+          <img src="/assets/img/tamanna-logo.png" className="logo" alt="Tamanna logo" />
         </a>
       </div>
       <h1>Weather</h1>
-      <div style={{ display: "flex", flexDirection: "row", gap: "16px" }}>
-        {/* <Switch checked={!isVisible} onChange={onChange} /> */}
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '16px' }}>
         {coordinateList && coordinateList.length > 0
           ? coordinateList.map((currentCoordinate, index) => (
               <WeatherCard
@@ -164,23 +147,14 @@ function App() {
       </div>
       <Divider />
       <p className="read-the-docs">
-        Created by{" "}
+        Created by{' '}
         <a href="https://github.com/euclidesdry" target="_blank">
           @euclidesdry
         </a>
       </p>
-      <Modal
-        title="Basic Modal"
-        open={isModalOpen}
-        onOk={handleAddNewCard}
-        onCancel={handleCancel}
-      >
+      <Modal title="Basic Modal" open={isModalOpen} onOk={handleAddNewCard} onCancel={handleCancel}>
         {modalError ? (
-          <Alert
-            message={modalError}
-            type="error"
-            style={{ marginBottom: "8px" }}
-          />
+          <Alert message={modalError} type="error" style={{ marginBottom: '8px' }} />
         ) : null}
 
         <Input

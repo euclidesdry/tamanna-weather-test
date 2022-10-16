@@ -1,26 +1,21 @@
-import { Divider, Card, Descriptions, Skeleton, Popconfirm } from "antd";
-import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { format } from "date-fns";
-import {
-  CurrentType,
-  DailyType,
-  MainCondition,
-  WeatherResponseType,
-} from "../../@types/weather";
-import ReactAnimatedWeather from "react-animated-weather";
-import weatherIcon from "../../helpers/weather-icon";
-import { useQueryClient } from "@tanstack/react-query";
-import { getWeather } from "../../apis/weather";
-import { ListNextDays } from "../ListNextDays";
-import React, { ReactNode } from "react";
-import { IAPIResponseTemplate } from "../../@types/api";
-import { useWeatherContext } from "../../contexts/weatherContext";
+import { Divider, Card, Descriptions, Skeleton, Popconfirm } from 'antd';
+import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { format } from 'date-fns';
+import { CurrentType, DailyType, MainCondition, WeatherResponseType } from '../../@types/weather';
+import ReactAnimatedWeather from 'react-animated-weather';
+import weatherIcon from '../../helpers/weather-icon';
+import { useQueryClient } from '@tanstack/react-query';
+import { getWeather } from '../../apis/weather';
+import { ListNextDays } from '../ListNextDays';
+import React, { ReactNode } from 'react';
+import { IAPIResponseTemplate } from '../../@types/api';
+import { useWeatherContext } from '../../contexts/weatherContext';
 
 const defaults = {
-  icon: "CLEAR_DAY",
-  color: "goldenrod",
+  icon: 'CLEAR_DAY',
+  color: 'goldenrod',
   size: 64,
-  animate: true,
+  animate: true
 };
 
 type WeatherCardProps = {
@@ -34,48 +29,36 @@ type WeatherCardProps = {
   onAddNewCard: () => void;
 };
 
-export function WeatherCard({
-  cardId,
-  lastCard,
-  location,
-  onAddNewCard,
-}: WeatherCardProps) {
+export function WeatherCard({ cardId, lastCard, location, onAddNewCard }: WeatherCardProps) {
   const { removeCoordinates } = useWeatherContext();
 
   const [weatherQueryResponse, setWeatherQueryResponse] =
     React.useState<IAPIResponseTemplate<WeatherResponseType>>();
-  const [currentTimezone, setCurrentTimezone] = React.useState<string | null>(
-    null
-  );
-  const [currentAllDays, setCurrentAllDays] = React.useState<
-    DailyType[] | null
-  >(null);
-  const [currentWeather, setCurrentWeather] =
-    React.useState<CurrentType | null>(null);
+  const [currentTimezone, setCurrentTimezone] = React.useState<string | null>(null);
+  const [currentAllDays, setCurrentAllDays] = React.useState<DailyType[] | null>(null);
+  const [currentWeather, setCurrentWeather] = React.useState<CurrentType | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const queryClient = useQueryClient();
-  const queryStatus = queryClient.getQueryState([
-    "weatherCard-query:" + cardId,
-  ]);
+  const queryStatus = queryClient.getQueryState(['weatherCard-query:' + cardId]);
 
   React.useEffect(() => {
-    setIsLoading(queryStatus?.status === "loading");
+    setIsLoading(queryStatus?.status === 'loading');
   }, [queryStatus]);
 
   React.useEffect(() => {
     (async function () {
       await queryClient.prefetchQuery(
-        ["weatherCard-query:" + cardId],
+        ['weatherCard-query:' + cardId],
         () => getWeather(location.latitude, location.longitude),
         {
-          staleTime: 120000,
+          staleTime: 120000
         }
       );
 
-      const queryData = queryClient.getQueryData<
-        IAPIResponseTemplate<WeatherResponseType>
-      >(["weatherCard-query:" + cardId]);
+      const queryData = queryClient.getQueryData<IAPIResponseTemplate<WeatherResponseType>>([
+        'weatherCard-query:' + cardId
+      ]);
 
       setWeatherQueryResponse(queryData);
     })();
@@ -85,7 +68,7 @@ export function WeatherCard({
 
   const onSelectIcon = (mainCondition: MainCondition) => ({
     ...defaults,
-    icon: weatherIcon.icon.select(mainCondition),
+    icon: weatherIcon.icon.select(mainCondition)
   });
 
   const handleRemoveLocation = (id: number) => {
@@ -102,7 +85,7 @@ export function WeatherCard({
         key="edit"
         title="Edit Card"
         onClick={() => {
-          alert("Opps!! The Edit function will be available son...");
+          alert('Opps!! The Edit function will be available son...');
         }}
       />,
       <Popconfirm
@@ -114,11 +97,7 @@ export function WeatherCard({
       >
         <DeleteOutlined key="delete" title="Remove Card" />
       </Popconfirm>,
-      <PlusOutlined
-        key="add"
-        onClick={() => handleAddLocation()}
-        title="Add new Card"
-      />,
+      <PlusOutlined key="add" onClick={() => handleAddLocation()} title="Add new Card" />
     ];
     if (lastCard !== cardId && lastCard > 0) {
       options = options.filter((_, index) => index !== 2);
@@ -145,14 +124,9 @@ export function WeatherCard({
       <Skeleton loading={loading} avatar active>
         {currentWeather?.weather ? (
           <>
-            <ReactAnimatedWeather
-              {...onSelectIcon(currentWeather?.weather[0].main)}
-            />
+            <ReactAnimatedWeather {...onSelectIcon(currentWeather?.weather[0].main)} />
             <Descriptions
-              title={`Today, ${format(
-                new Date(currentWeather?.dt * 1000),
-                "LLLL do, yyyy"
-              )}`}
+              title={`Today, ${format(new Date(currentWeather?.dt * 1000), 'LLLL do, yyyy')}`}
               size="small"
               column={1}
             >
@@ -170,10 +144,8 @@ export function WeatherCard({
           </>
         ) : null}
       </Skeleton>
-      <Divider style={{ marginTop: "8px", marginBottom: "8px" }} />
-      {currentAllDays ? (
-        <ListNextDays loading={loading} currentAllDays={currentAllDays} />
-      ) : null}
+      <Divider style={{ marginTop: '8px', marginBottom: '8px' }} />
+      {currentAllDays ? <ListNextDays loading={loading} currentAllDays={currentAllDays} /> : null}
     </Card>
   );
 }
