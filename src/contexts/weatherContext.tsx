@@ -34,9 +34,9 @@ const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({
         ...currentCoordinates,
         newCoordinate,
       ]);
+    } else {
+      setCoordinateList(initialContextValue);
     }
-
-    setCoordinateList(initialContextValue);
 
     return newCoordinate;
   }

@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { Divider, Input, Modal, Select, Switch } from "antd";
+import { Alert, Divider, Input, message, Modal, Select, Switch } from "antd";
 import { useCurrentPosition } from "react-use-geolocation";
 import { WeatherCard } from "./components/Card";
 import { useWeatherContext } from "./contexts/weatherContext";
@@ -21,6 +21,7 @@ const selectBefore = (
       setLocation((oldLocation) => ({
         ...oldLocation,
         country: value,
+        state: "Lisboa",
       }));
     }}
     style={{ minWidth: "160px" }}
@@ -45,6 +46,7 @@ function App() {
   });
   const [isVisible, setIsVisible] = React.useState(true);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [modalError, setModalError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     console.log("::::: New Location: ", newLocation);
@@ -66,12 +68,24 @@ function App() {
           newLocation?.state
         );
 
-        if (response.length <= 0) throw new Error("Error to get this Location");
+        if (response.length <= 0) {
+          const ErrorMessage = `Error getting the "Weather Forecast" for ${newLocation.state}.`;
+          message.error(ErrorMessage);
+          setModalError(ErrorMessage);
+          throw new Error(ErrorMessage);
+        }
+
         if (response.length > 0) {
+          setModalError(null);
+
           addCoordinates({
             latitude: response[0].lat,
             longitude: response[0].lon,
           });
+
+          message.success(
+            `The "Weather Forecast" ${newLocation.state} has been added successfully!`
+          );
         }
       }
 
@@ -161,6 +175,14 @@ function App() {
         onOk={handleAddNewCard}
         onCancel={handleCancel}
       >
+        {modalError ? (
+          <Alert
+            message={modalError}
+            type="error"
+            style={{ marginBottom: "8px" }}
+          />
+        ) : null}
+
         <Input
           addonBefore={selectBefore(setNewLocation)}
           defaultValue="Lisboa"

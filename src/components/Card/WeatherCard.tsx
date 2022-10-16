@@ -100,20 +100,25 @@ export function WeatherCard({
     let options = [
       <EditOutlined
         key="edit"
+        title="Edit Card"
         onClick={() => {
           alert("Opps!! The Edit function will be available son...");
         }}
       />,
       <Popconfirm
         placement="top"
-        title={`Are you sure that want to remove this ${currentTimezone} "Weather Forecast"?`}
+        title={`Remove this ${currentTimezone} "Weather Forecast"?`}
         onConfirm={() => handleRemoveLocation(cardId)}
-        okText="Yes, I want!"
+        okText="Yes, remove it!"
         cancelText="No"
       >
-        <DeleteOutlined key="delete" />
+        <DeleteOutlined key="delete" title="Remove Card" />
       </Popconfirm>,
-      <PlusOutlined key="add" onClick={() => handleAddLocation()} />,
+      <PlusOutlined
+        key="add"
+        onClick={() => handleAddLocation()}
+        title="Add new Card"
+      />,
     ];
     if (lastCard !== cardId && lastCard > 0) {
       options = options.filter((_, index) => index !== 2);
