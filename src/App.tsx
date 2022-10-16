@@ -39,7 +39,10 @@ function App() {
     updateCoordinates,
     clearCoordinates,
   } = useWeatherContext();
-  const [newLocation, setNewLocation] = React.useState<LocationType>();
+  const [newLocation, setNewLocation] = React.useState<LocationType>({
+    country: "PT",
+    state: "Lisboa",
+  });
   const [isVisible, setIsVisible] = React.useState(true);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 

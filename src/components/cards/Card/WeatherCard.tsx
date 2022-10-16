@@ -14,6 +14,7 @@ import { getWeather } from "../../../apis/weather";
 import { ListNextDays } from "../../ListNextDays";
 import React, { ReactNode } from "react";
 import { IAPIResponseTemplate } from "../../../@types/api";
+import { useWeatherContext } from "../../../contexts/weatherContext";
 
 const defaults = {
   icon: "CLEAR_DAY",
@@ -39,6 +40,8 @@ export function WeatherCard({
   location,
   onAddNewCard,
 }: WeatherCardProps) {
+  const { removeCoordinates } = useWeatherContext();
+
   const [weatherQueryResponse, setWeatherQueryResponse] =
     React.useState<IAPIResponseTemplate<WeatherResponseType>>();
   const [currentTimezone, setCurrentTimezone] = React.useState<string | null>(
@@ -52,7 +55,9 @@ export function WeatherCard({
   const [isLoading, setIsLoading] = React.useState(false);
 
   const queryClient = useQueryClient();
-  const queryStatus = queryClient.getQueryState(["weatherCard-query"]);
+  const queryStatus = queryClient.getQueryState([
+    "weatherCard-query:" + cardId,
+  ]);
 
   React.useEffect(() => {
     setIsLoading(queryStatus?.status === "loading");
@@ -61,7 +66,7 @@ export function WeatherCard({
   React.useEffect(() => {
     (async function () {
       await queryClient.prefetchQuery(
-        ["weatherCard-query"],
+        ["weatherCard-query:" + cardId],
         () => getWeather(location.latitude, location.longitude),
         {
           staleTime: 240000,
@@ -70,7 +75,7 @@ export function WeatherCard({
 
       const queryData = queryClient.getQueryData<
         IAPIResponseTemplate<WeatherResponseType>
-      >(["weatherCard-query"]);
+      >(["weatherCard-query:" + cardId]);
 
       console.log(" ---::: queryData []: ", queryData?.data);
 
@@ -85,21 +90,27 @@ export function WeatherCard({
     icon: weatherIcon.icon.select(mainCondition),
   });
 
+  const handleRemoveLocation = (id: number) => {
+    removeCoordinates(id);
+  };
+
   const handleAddLocation = () => {
     onAddNewCard();
-    console.log("☪ New Coordinates has been added!!");
   };
 
   const configActions = (): ReactNode[] => {
     let options = [
       <EditOutlined key="edit" />,
-      <DeleteOutlined key="delete" />,
+      <DeleteOutlined
+        key="delete"
+        onClick={() => handleRemoveLocation(cardId)}
+      />,
       <PlusOutlined key="add" onClick={() => handleAddLocation()} />,
     ];
-    if (lastCard !== cardId) {
-      options = options.filter((option, index) => index !== 2);
+    if (lastCard !== cardId && lastCard > 0) {
+      options = options.filter((_, index) => index !== 2);
     }
-    console.log("() options ::: ", options);
+
     return options;
   };
 
