@@ -8,12 +8,9 @@ import { useWeatherContext } from "./contexts/weatherContext";
 
 function App() {
   const [position, error] = useCurrentPosition();
-  const { coordinateList } = useWeatherContext();
-  const [coordinates, setCoordinates] = React.useState<CoordinatesType>({
-    latitude: 38.7259284,
-    longitude: -9.137382,
-  });
+  const { coordinateList, updateCoordinates } = useWeatherContext();
   const [isVisible, setIsVisible] = React.useState(true);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const onChange = (checked: boolean) => {
     setIsVisible(!checked);
@@ -28,14 +25,16 @@ function App() {
     if (
       latitude &&
       longitude &&
-      latitude !== coordinates.latitude &&
-      longitude !== coordinates.longitude
+      latitude !== coordinateList[0].latitude &&
+      longitude !== coordinateList[0].longitude
     ) {
-      setCoordinates((oldCoordinates) => ({
-        ...oldCoordinates,
-        latitude,
-        longitude,
-      }));
+      updateCoordinates(
+        {
+          latitude,
+          longitude,
+        },
+        0
+      );
     }
   }, [position]);
 
@@ -52,10 +51,14 @@ function App() {
       </div>
       <h1>Weather</h1>
       <div>
-        <Switch checked={!isVisible} onChange={onChange} />
+        {/* <Switch checked={!isVisible} onChange={onChange} /> */}
         {coordinateList && coordinateList.length > 0
           ? coordinateList.map((currentCoordinate, index) => (
-              <MainCard key={index} location={currentCoordinate} />
+              <MainCard
+                key={index}
+                cardId={index}
+                location={currentCoordinate}
+              />
             ))
           : null}
       </div>

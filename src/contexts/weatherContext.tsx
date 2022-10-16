@@ -1,8 +1,16 @@
 import * as React from "react";
+import { useLocalStorage } from "react-use";
 import {
   CoordinatesType,
   WeatherContextType,
 } from "../@types/contexts/weather";
+
+const initialContextValue = [
+  {
+    latitude: 38.7259284,
+    longitude: -9.137382,
+  },
+];
 
 export const WeatherContext = React.createContext<WeatherContextType | null>(
   null
@@ -11,14 +19,16 @@ export const WeatherContext = React.createContext<WeatherContextType | null>(
 const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const [cachedCoordinates, setCoordinateToStorage, removeCoordinateToStorage] =
+    useLocalStorage<CoordinatesType[]>("TMN:WeatherList");
+
   const [coordinateList, setCoordinateList] = React.useState<CoordinatesType[]>(
-    [
-      {
-        latitude: 38.7259284,
-        longitude: -9.137382,
-      },
-    ]
+    cachedCoordinates ? cachedCoordinates : initialContextValue
   );
+
+  React.useEffect(() => {
+    setCoordinateToStorage(coordinateList);
+  }, [coordinateList]);
 
   function addCoordinates(newCoordinate: CoordinatesType): CoordinatesType {
     setCoordinateList((currentCoordinates) => [
@@ -26,6 +36,19 @@ const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({
       newCoordinate,
     ]);
     return newCoordinate;
+  }
+
+  function updateCoordinates(
+    newCoordinate: CoordinatesType,
+    coordinateId: number
+  ): number {
+    setCoordinateList((currentCoordinates) =>
+      currentCoordinates.map((coordinate, index) => {
+        if (index === coordinateId) return newCoordinate;
+        return coordinate;
+      })
+    );
+    return coordinateId;
   }
 
   function removeCoordinates(coordinateId: number): number {
@@ -37,7 +60,12 @@ const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <WeatherContext.Provider
-      value={{ coordinateList, addCoordinates, removeCoordinates }}
+      value={{
+        coordinateList,
+        addCoordinates,
+        updateCoordinates,
+        removeCoordinates,
+      }}
     >
       {children}
     </WeatherContext.Provider>

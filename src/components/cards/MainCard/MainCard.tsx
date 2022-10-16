@@ -1,5 +1,5 @@
 import { Divider, Card, Descriptions, Skeleton } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import { CurrentType, DailyType, MainCondition } from "../../../@types/weather";
 import ReactAnimatedWeather from "react-animated-weather";
@@ -7,7 +7,7 @@ import weatherIcon from "../../../helpers/weather-icon";
 import { useQuery } from "@tanstack/react-query";
 import { getWeather } from "../../../apis/weather";
 import { ListNextDays } from "../../ListNextDays";
-import React from "react";
+import React, { ReactNode } from "react";
 
 const defaults = {
   icon: "CLEAR_DAY",
@@ -17,10 +17,11 @@ const defaults = {
 };
 
 type MainCardProps = {
+  cardId: number;
   location: { latitude: number; longitude: number };
 };
 
-export function MainCard({ location }: MainCardProps) {
+export function MainCard({ cardId, location }: MainCardProps) {
   const [currentTimezone, setCurrentTimezone] = React.useState<string | null>(
     null
   );
@@ -40,6 +41,21 @@ export function MainCard({ location }: MainCardProps) {
 
   const loading = isLoading || isFetching;
 
+  const onSelectIcon = (mainCondition: MainCondition) => ({
+    ...defaults,
+    icon: weatherIcon.icon.select(mainCondition),
+  });
+
+  const handleAddLocation = () => {
+    console.log("☪ New Coordinates has been added!!");
+  };
+
+  const configActions = (): ReactNode[] => [
+    <EditOutlined key="edit" />,
+    <DeleteOutlined key="delete" />,
+    <PlusOutlined key="add" onClick={() => handleAddLocation()} />,
+  ];
+
   React.useEffect(() => {
     if (weatherQueryResponse?.data) {
       setCurrentWeather(weatherQueryResponse.data.current);
@@ -48,17 +64,12 @@ export function MainCard({ location }: MainCardProps) {
     }
   }, [weatherQueryResponse?.data]);
 
-  const onSelectIcon = (mainCondition: MainCondition) => ({
-    ...defaults,
-    icon: weatherIcon.icon.select(mainCondition),
-  });
-
   return (
     <Card
       style={{ width: 380, marginTop: 8 }}
       size="small"
       title={currentTimezone}
-      actions={[<EditOutlined key="edit" />, <DeleteOutlined key="delete" />]}
+      actions={configActions()}
     >
       <Skeleton loading={loading} avatar active>
         {currentWeather?.weather ? (
