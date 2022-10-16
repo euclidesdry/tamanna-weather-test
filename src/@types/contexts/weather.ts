@@ -11,4 +11,5 @@ export type WeatherContextType = {
     coordinateId: number
   ): number;
   removeCoordinates(coordinateId: number): number;
+  clearCoordinates(): void;
 };

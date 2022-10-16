@@ -26,10 +26,6 @@ const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({
     cachedCoordinates ? cachedCoordinates : initialContextValue
   );
 
-  React.useEffect(() => {
-    setCoordinateToStorage(coordinateList);
-  }, [coordinateList]);
-
   function addCoordinates(newCoordinate: CoordinatesType): CoordinatesType {
     setCoordinateList((currentCoordinates) => [
       ...currentCoordinates,
@@ -58,6 +54,14 @@ const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({
     return coordinateId;
   }
 
+  function clearCoordinates() {
+    setCoordinateList(initialContextValue);
+  }
+
+  React.useEffect(() => {
+    setCoordinateToStorage(coordinateList);
+  }, [coordinateList]);
+
   return (
     <WeatherContext.Provider
       value={{
@@ -65,6 +69,7 @@ const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({
         addCoordinates,
         updateCoordinates,
         removeCoordinates,
+        clearCoordinates,
       }}
     >
       {children}

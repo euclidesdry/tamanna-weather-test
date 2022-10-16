@@ -77,3 +77,14 @@ export type WeatherResponseType = {
   current: CurrentType;
   daily: DailyType[];
 };
+
+export type NewWeatherResponseType =
+  | Array<{
+      country: string;
+      lat: number;
+      lon: number;
+      local_names: object;
+      name: string;
+      state: string;
+    }>
+  | [];

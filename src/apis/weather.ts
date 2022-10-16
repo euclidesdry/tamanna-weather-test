@@ -1,5 +1,5 @@
 import axiosService from "../service/axiosService";
-import { WeatherResponseType } from "../@types/weather";
+import { NewWeatherResponseType, WeatherResponseType } from "../@types/weather";
 import { IAPIResponseTemplate } from "../@types/api";
 
 const API_URL = "https://api.openweathermap.org";
@@ -13,5 +13,15 @@ export async function getWeather(
   const coordinates = `lat=${latitude}&lon=${longitude}`;
   return axiosService.get<WeatherResponseType>(
     `${API_URL}/data/2.5/onecall?appid=${API_KEY}&${coordinates}&units=metric&exclude=minutely,hourly,alerts`
+  );
+}
+
+export async function getWeatherByCountryAndState(
+  country: string,
+  state: string
+): Promise<IAPIResponseTemplate<NewWeatherResponseType>> {
+  const location = `${state},${country}`;
+  return axiosService.get<NewWeatherResponseType>(
+    `${API_URL}/geo/1.0/direct?appid=${API_KEY}&limit=1&q=${location}`
   );
 }

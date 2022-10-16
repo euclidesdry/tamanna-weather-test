@@ -1,13 +1,19 @@
 import { Divider, Card, Descriptions, Skeleton } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
-import { CurrentType, DailyType, MainCondition } from "../../../@types/weather";
+import {
+  CurrentType,
+  DailyType,
+  MainCondition,
+  WeatherResponseType,
+} from "../../../@types/weather";
 import ReactAnimatedWeather from "react-animated-weather";
 import weatherIcon from "../../../helpers/weather-icon";
-import { useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { getWeather } from "../../../apis/weather";
 import { ListNextDays } from "../../ListNextDays";
 import React, { ReactNode } from "react";
+import { IAPIResponseTemplate } from "../../../@types/api";
 
 const defaults = {
   icon: "CLEAR_DAY",
@@ -16,12 +22,23 @@ const defaults = {
   animate: true,
 };
 
-type MainCardProps = {
+type WeatherCardProps = {
+  cardData?: {
+    loading: boolean;
+    data: IAPIResponseTemplate<WeatherResponseType> | undefined;
+  };
   cardId: number;
   location: { latitude: number; longitude: number };
+  onAddNewCard: () => void;
 };
 
-export function MainCard({ cardId, location }: MainCardProps) {
+export function WeatherCard({
+  cardId,
+  location,
+  onAddNewCard,
+}: WeatherCardProps) {
+  const [weatherQueryResponse, setWeatherQueryResponse] =
+    React.useState<IAPIResponseTemplate<WeatherResponseType>>();
   const [currentTimezone, setCurrentTimezone] = React.useState<string | null>(
     null
   );
@@ -30,16 +47,36 @@ export function MainCard({ cardId, location }: MainCardProps) {
   >(null);
   const [currentWeather, setCurrentWeather] =
     React.useState<CurrentType | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const {
-    data: weatherQueryResponse,
-    isLoading,
-    isFetching,
-  } = useQuery(["weather"], () =>
-    getWeather(location.latitude, location.longitude)
-  );
+  const queryClient = useQueryClient();
+  const queryStatus = queryClient.getQueryState(["weatherCard-query"]);
 
-  const loading = isLoading || isFetching;
+  React.useEffect(() => {
+    setIsLoading(queryStatus?.status === "loading");
+  }, [queryStatus]);
+
+  React.useEffect(() => {
+    (async function () {
+      await queryClient.prefetchQuery(
+        ["weatherCard-query"],
+        () => getWeather(location.latitude, location.longitude),
+        {
+          staleTime: 240000,
+        }
+      );
+
+      const queryData = queryClient.getQueryData<
+        IAPIResponseTemplate<WeatherResponseType>
+      >(["weatherCard-query"]);
+
+      console.log(" ---::: queryData []: ", queryData?.data);
+
+      setWeatherQueryResponse(queryData);
+    })();
+  }, []);
+
+  const loading = isLoading;
 
   const onSelectIcon = (mainCondition: MainCondition) => ({
     ...defaults,
@@ -47,6 +84,7 @@ export function MainCard({ cardId, location }: MainCardProps) {
   });
 
   const handleAddLocation = () => {
+    onAddNewCard();
     console.log("☪ New Coordinates has been added!!");
   };
 
