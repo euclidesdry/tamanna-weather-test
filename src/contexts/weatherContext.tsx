@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useLocalStorage } from 'react-use';
+
 import { CoordinatesType, WeatherContextType } from '../@types/contexts/weather';
 
 const initialContextValue = [
@@ -12,7 +13,7 @@ const initialContextValue = [
 export const WeatherContext = React.createContext<WeatherContextType | null>(null);
 
 const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [cachedCoordinates, setCoordinateToStorage, removeCoordinateToStorage] =
+  const [cachedCoordinates, setCoordinateToStorage] =
     useLocalStorage<CoordinatesType[]>('TMN:WeatherList');
 
   const [coordinateList, setCoordinateList] = React.useState<CoordinatesType[]>(
@@ -62,8 +63,7 @@ const WeatherContextProvider: React.FC<{ children: React.ReactNode }> = ({ child
         updateCoordinates,
         removeCoordinates,
         clearCoordinates
-      }}
-    >
+      }}>
       {children}
     </WeatherContext.Provider>
   );

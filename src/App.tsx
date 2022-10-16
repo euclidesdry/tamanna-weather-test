@@ -1,11 +1,13 @@
-import React from 'react';
 import './App.css';
+
 import { Alert, Divider, Input, message, Modal, Select } from 'antd';
+import React from 'react';
 import { useCurrentPosition } from 'react-use-geolocation';
-import { WeatherCard } from './components/Card';
-import { useWeatherContext } from './contexts/weatherContext';
-import { COUNTRY_LIST } from './constants/country';
+
 import { getWeatherByCountryAndState } from './apis/weather';
+import { WeatherCard } from './components/Card';
+import { COUNTRY_LIST } from './constants/country';
+import { useWeatherContext } from './contexts/weatherContext';
 
 const { Option } = Select;
 
@@ -22,10 +24,11 @@ const selectBefore = (setLocation: React.Dispatch<React.SetStateAction<LocationT
         state: 'Lisboa'
       }));
     }}
-    style={{ minWidth: '160px' }}
-  >
+    style={{ minWidth: '160px' }}>
     {COUNTRY_LIST.map(({ value, label }) => (
-      <Option value={value}>{label}</Option>
+      <Option key={value} value={value}>
+        {label}
+      </Option>
     ))}
   </Select>
 );
@@ -80,7 +83,9 @@ function App() {
       }
 
       setIsModalOpen(false);
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleCancel = () => {
@@ -127,7 +132,7 @@ function App() {
   return (
     <div className="App">
       <div>
-        <a href="https://www.tamanna.com" target="_blank">
+        <a href="https://www.tamanna.com" target="_blank" rel="noopener noreferrer">
           <img src="/assets/img/tamanna-logo.png" className="logo" alt="Tamanna logo" />
         </a>
       </div>
@@ -148,7 +153,7 @@ function App() {
       <Divider />
       <p className="read-the-docs">
         Created by{' '}
-        <a href="https://github.com/euclidesdry" target="_blank">
+        <a href="https://github.com/euclidesdry" target="_blank" rel="noopener noreferrer">
           @euclidesdry
         </a>
       </p>

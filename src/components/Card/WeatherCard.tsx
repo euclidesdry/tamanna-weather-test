@@ -1,15 +1,16 @@
-import { Divider, Card, Descriptions, Skeleton, Popconfirm } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { format } from 'date-fns';
-import { CurrentType, DailyType, MainCondition, WeatherResponseType } from '../../@types/weather';
-import ReactAnimatedWeather from 'react-animated-weather';
-import weatherIcon from '../../helpers/weather-icon';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useQueryClient } from '@tanstack/react-query';
-import { getWeather } from '../../apis/weather';
-import { ListNextDays } from '../ListNextDays';
+import { Card, Descriptions, Divider, Popconfirm, Skeleton } from 'antd';
+import { format } from 'date-fns';
 import React, { ReactNode } from 'react';
+import ReactAnimatedWeather from 'react-animated-weather';
+
 import { IAPIResponseTemplate } from '../../@types/api';
+import { CurrentType, DailyType, MainCondition, WeatherResponseType } from '../../@types/weather';
+import { getWeather } from '../../apis/weather';
 import { useWeatherContext } from '../../contexts/weatherContext';
+import weatherIcon from '../../helpers/weather-icon';
+import { ListNextDays } from '../ListNextDays';
 
 const defaults = {
   icon: 'CLEAR_DAY',
@@ -89,13 +90,13 @@ export function WeatherCard({ cardId, lastCard, location, onAddNewCard }: Weathe
         }}
       />,
       <Popconfirm
+        key="delete"
         placement="top"
         title={`Remove this ${currentTimezone} "Weather Forecast"?`}
         onConfirm={() => handleRemoveLocation(cardId)}
         okText="Yes, remove it!"
-        cancelText="No"
-      >
-        <DeleteOutlined key="delete" title="Remove Card" />
+        cancelText="No">
+        <DeleteOutlined title="Remove Card" />
       </Popconfirm>,
       <PlusOutlined key="add" onClick={() => handleAddLocation()} title="Add new Card" />
     ];
@@ -119,8 +120,7 @@ export function WeatherCard({ cardId, lastCard, location, onAddNewCard }: Weathe
       style={{ width: 380, marginTop: 8 }}
       size="small"
       title={currentTimezone}
-      actions={configActions()}
-    >
+      actions={configActions()}>
       <Skeleton loading={loading} avatar active>
         {currentWeather?.weather ? (
           <>
@@ -128,8 +128,7 @@ export function WeatherCard({ cardId, lastCard, location, onAddNewCard }: Weathe
             <Descriptions
               title={`Today, ${format(new Date(currentWeather?.dt * 1000), 'LLLL do, yyyy')}`}
               size="small"
-              column={1}
-            >
+              column={1}>
               <Descriptions.Item label="Status">
                 {`Win. ${currentWeather.wind_speed}km/h | Hum. ${
                   currentWeather.humidity
