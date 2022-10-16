@@ -12,7 +12,7 @@ const { Option } = Select;
 type LocationType = { country?: string; state?: string };
 
 const selectBefore = (
-  setLocation: React.Dispatch<React.SetStateAction<LocationType | undefined>>
+  setLocation: React.Dispatch<React.SetStateAction<LocationType>>
 ) => (
   <Select
     defaultValue="PT"
