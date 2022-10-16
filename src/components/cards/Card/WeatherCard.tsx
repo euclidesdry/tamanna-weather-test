@@ -28,12 +28,14 @@ type WeatherCardProps = {
     data: IAPIResponseTemplate<WeatherResponseType> | undefined;
   };
   cardId: number;
+  lastCard: number;
   location: { latitude: number; longitude: number };
   onAddNewCard: () => void;
 };
 
 export function WeatherCard({
   cardId,
+  lastCard,
   location,
   onAddNewCard,
 }: WeatherCardProps) {
@@ -88,11 +90,18 @@ export function WeatherCard({
     console.log("☪ New Coordinates has been added!!");
   };
 
-  const configActions = (): ReactNode[] => [
-    <EditOutlined key="edit" />,
-    <DeleteOutlined key="delete" />,
-    <PlusOutlined key="add" onClick={() => handleAddLocation()} />,
-  ];
+  const configActions = (): ReactNode[] => {
+    let options = [
+      <EditOutlined key="edit" />,
+      <DeleteOutlined key="delete" />,
+      <PlusOutlined key="add" onClick={() => handleAddLocation()} />,
+    ];
+    if (lastCard !== cardId) {
+      options = options.filter((option, index) => index !== 2);
+    }
+    console.log("() options ::: ", options);
+    return options;
+  };
 
   React.useEffect(() => {
     if (weatherQueryResponse?.data) {

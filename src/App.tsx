@@ -136,6 +136,7 @@ function App() {
               <WeatherCard
                 key={index}
                 cardId={index}
+                lastCard={coordinateList.length - 1}
                 location={currentCoordinate}
                 onAddNewCard={onAddCard}
               />
